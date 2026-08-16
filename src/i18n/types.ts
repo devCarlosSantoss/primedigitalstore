@@ -94,6 +94,8 @@ export interface Dictionary {
     securePayment: string
     lifetimeAccess: string
     guarantee: string
+    trustCustomers: string
+    orInstallments: string
   }
   productContent: {
     badge: string
@@ -110,6 +112,7 @@ export interface Dictionary {
     totalValue: string
     bonusLabel: string
     worth: string
+    free: string
   }
   productCTA: {
     title: string
@@ -121,6 +124,7 @@ export interface Dictionary {
     delivery: string
     lifetimeAccess: string
     guarantee: string
+    guaranteeText: string
     creditCard: string
     bankSlip: string
     pix: string
@@ -131,8 +135,19 @@ export interface Dictionary {
     title: string
     titleHighlight: string
     subtitle: string
+    contactTitle: string
+    contactText: string
+    contactButton: string
+  }
+  countdown: {
+    title: string
+    days: string
+    hours: string
+    minutes: string
+    seconds: string
   }
   productRelated: {
+    badge: string
     title: string
     subtitle: string
   }

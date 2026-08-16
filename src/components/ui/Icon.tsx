@@ -6,6 +6,7 @@ import {
   Instagram, Youtube, Linkedin, Github, Twitter, Facebook,
   Play, FileText, Download, Gift, Truck, Lock, Eye,
   Tag, CreditCard, Banknote, QrCode, Globe,
+  Flame, BadgeCheck, MessageCircle, Package,
   type LucideIcon,
 } from "lucide-react"
 
@@ -17,6 +18,7 @@ const iconMap: Record<string, LucideIcon> = {
   Instagram, Youtube, Linkedin, Github, Twitter, Facebook,
   Play, FileText, Download, Gift, Truck, Lock, Eye,
   Tag, CreditCard, Banknote, QrCode, Globe,
+  Flame, BadgeCheck, MessageCircle, Package,
 }
 
 interface IconProps {

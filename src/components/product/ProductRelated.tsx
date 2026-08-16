@@ -26,6 +26,7 @@ export function ProductRelated({ product }: ProductRelatedProps) {
     <section className="py-12 xs:py-16 sm:py-20 bg-white">
       <div className="container-wide">
         <div className="text-center mb-10">
+          <span className="badge-primary mb-4">{t.productRelated.badge}</span>
           <h2 className="text-2xl sm:text-3xl font-bold text-dark-900">
             {t.productRelated.title}
           </h2>

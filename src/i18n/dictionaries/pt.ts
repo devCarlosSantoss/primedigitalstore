@@ -104,6 +104,8 @@ const pt: Dictionary = {
     securePayment: "Pagamento seguro",
     lifetimeAccess: "Acesso vitalício",
     guarantee: "7 dias de garantia",
+    trustCustomers: "{count} clientes satisfeitos",
+    orInstallments: "ou 3x de {price} sem juros",
   },
   productContent: {
     badge: "Sobre o Produto",
@@ -120,6 +122,7 @@ const pt: Dictionary = {
     totalValue: "Valor total dos bônus:",
     bonusLabel: "BÔNUS",
     worth: "Vale",
+    free: "GRÁTIS",
   },
   productCTA: {
     title: "Garanta seu acesso agora",
@@ -132,6 +135,8 @@ const pt: Dictionary = {
     delivery: "Entrega imediata",
     lifetimeAccess: "Acesso vitalício",
     guarantee: "7 dias de garantia",
+    guaranteeText:
+      "Compre com total segurança. Se não gostar, devolvemos 100% do valor em até 7 dias, sem perguntas.",
     creditCard: "Cartão de Crédito",
     bankSlip: "Boleto Bancário",
     pix: "PIX",
@@ -142,8 +147,19 @@ const pt: Dictionary = {
     title: "Dúvidas sobre",
     titleHighlight: "o produto",
     subtitle: "Tire suas principais dúvidas antes de comprar.",
+    contactTitle: "Ainda tem dúvidas?",
+    contactText: "Fale com nosso time de suporte e receba resposta em até 2 horas.",
+    contactButton: "Falar com o suporte",
+  },
+  countdown: {
+    title: "Oferta termina em",
+    days: "dias",
+    hours: "horas",
+    minutes: "min",
+    seconds: "seg",
   },
   productRelated: {
+    badge: "Continue Explorando",
     title: "Produtos relacionados",
     subtitle: "Você também pode gostar destes produtos.",
   },

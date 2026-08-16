@@ -104,6 +104,8 @@ const en: Dictionary = {
     securePayment: "Secure payment",
     lifetimeAccess: "Lifetime access",
     guarantee: "7-day guarantee",
+    trustCustomers: "{count} satisfied customers",
+    orInstallments: "or 3x of {price} interest-free",
   },
   productContent: {
     badge: "About the Product",
@@ -120,6 +122,7 @@ const en: Dictionary = {
     totalValue: "Total bonus value:",
     bonusLabel: "BONUS",
     worth: "Worth",
+    free: "FREE",
   },
   productCTA: {
     title: "Get your access now",
@@ -132,6 +135,8 @@ const en: Dictionary = {
     delivery: "Instant Delivery",
     lifetimeAccess: "Lifetime Access",
     guarantee: "7-Day Guarantee",
+    guaranteeText:
+      "Buy with total security. If you don't like it, we'll refund 100% of your money within 7 days, no questions asked.",
     creditCard: "Credit Card",
     bankSlip: "Bank Slip",
     pix: "PIX",
@@ -142,8 +147,19 @@ const en: Dictionary = {
     title: "Questions about",
     titleHighlight: "the product",
     subtitle: "Get your main questions answered before buying.",
+    contactTitle: "Still have questions?",
+    contactText: "Talk to our support team and get a response within 2 hours.",
+    contactButton: "Contact support",
+  },
+  countdown: {
+    title: "Offer ends in",
+    days: "days",
+    hours: "hrs",
+    minutes: "min",
+    seconds: "sec",
   },
   productRelated: {
+    badge: "Keep Exploring",
     title: "Related products",
     subtitle: "You may also like these products.",
   },

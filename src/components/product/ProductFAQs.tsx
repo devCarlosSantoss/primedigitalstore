@@ -2,6 +2,7 @@
 
 import { Product } from "@/types"
 import { ProductFAQ } from "../sections/ProductFAQ"
+import { Icon } from "../ui/Icon"
 import { useLanguage } from "@/i18n/LanguageProvider"
 
 interface ProductFAQsProps {
@@ -29,6 +30,25 @@ export function ProductFAQs({ product }: ProductFAQsProps) {
           </div>
 
           <ProductFAQ faqs={product.faq} />
+
+          <div className="mt-8 rounded-2xl border border-dashed border-dark-200 bg-white p-6 xs:p-8 text-center">
+            <span className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-xl bg-primary-50 text-primary-600">
+              <Icon name="MessageCircle" size={24} />
+            </span>
+            <h3 className="text-lg font-bold text-dark-900">
+              {t.productFAQs.contactTitle}
+            </h3>
+            <p className="mt-1 text-sm text-dark-500">
+              {t.productFAQs.contactText}
+            </p>
+            <a
+              href="mailto:suporte@primedigitalstore.com.br"
+              className="btn-secondary mt-4"
+            >
+              <Icon name="Mail" size={18} />
+              {t.productFAQs.contactButton}
+            </a>
+          </div>
         </div>
       </div>
     </section>

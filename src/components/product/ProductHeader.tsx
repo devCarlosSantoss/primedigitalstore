@@ -13,10 +13,18 @@ interface ProductHeaderProps {
 export function ProductHeader({ product }: ProductHeaderProps) {
   const { t } = useLanguage()
 
+  const discount = product.originalPrice
+    ? Math.round((1 - product.price / product.originalPrice) * 100)
+    : 0
+
+  const installment = product.price / 3
+
   return (
     <section className="bg-dark-950 relative overflow-hidden pt-20 sm:pt-28">
       <div className="absolute inset-0 bg-grid opacity-20" />
-      <div className="absolute inset-0 bg-gradient-hero-glow" />
+      <div className="absolute -top-40 -left-40 h-[480px] w-[480px] rounded-full bg-primary-600/20 blur-[120px]" />
+      <div className="absolute -top-20 -right-40 h-[480px] w-[480px] rounded-full bg-secondary-600/20 blur-[120px]" />
+      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-dark-950/70 to-dark-950" />
 
       <div className="container-wide relative pb-12 sm:pb-16">
         <Link
@@ -27,36 +35,80 @@ export function ProductHeader({ product }: ProductHeaderProps) {
           {t.productHeader.backToStore}
         </Link>
 
-        <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-center">
-          <div className="relative">
-            <div className="aspect-[4/3] rounded-2xl overflow-hidden border border-white/10 shadow-2xl">
+        <div className="grid lg:grid-cols-2 gap-10 lg:gap-14 items-start">
+          <div className="relative lg:sticky lg:top-28">
+            <div className="absolute -inset-4 rounded-[2rem] bg-gradient-to-br from-primary-500/30 via-secondary-500/20 to-transparent blur-2xl" />
+            <div className="relative aspect-[4/3] overflow-hidden rounded-3xl border border-white/10 shadow-2xl shadow-black/50">
               <img
                 src={product.image}
                 alt={product.name}
                 className="h-full w-full object-cover"
               />
+              <div className="absolute inset-0 bg-gradient-to-t from-dark-950/70 via-transparent to-transparent" />
             </div>
+
             {product.originalPrice && (
-              <div className="absolute -top-2 -right-2 sm:-top-3 sm:-right-3">
-                <span className="inline-flex items-center gap-1 rounded-lg sm:rounded-xl bg-gradient-to-br from-secondary-500 to-secondary-700 px-2.5 py-1.5 sm:px-4 sm:py-2 text-xs sm:text-sm font-bold text-white shadow-lg shadow-secondary-500/30">
+              <div className="absolute -top-3 -right-3 sm:-top-4 sm:-right-4 animate-float">
+                <span className="inline-flex items-center gap-1 rounded-xl bg-gradient-to-br from-secondary-500 to-secondary-700 px-3 py-2 sm:px-4 sm:py-2.5 text-xs sm:text-sm font-bold text-white shadow-lg shadow-secondary-500/40">
                   <Icon name="Zap" size={16} />
-                  -{Math.round((1 - product.price / product.originalPrice) * 100)}% {t.productHeader.percentOff}
+                  -{discount}% {t.productHeader.percentOff}
                 </span>
               </div>
             )}
+
+            {product.bestSeller && (
+              <div className="absolute top-4 left-4">
+                <span className="inline-flex items-center gap-1 rounded-full bg-accent-500 px-3 py-1.5 text-xs font-bold text-white shadow-lg shadow-accent-500/30">
+                  <Icon name="TrendingUp" size={13} />
+                  {t.productCard.bestSeller}
+                </span>
+              </div>
+            )}
+
+            <div className="absolute -bottom-5 -left-2 sm:-left-4 animate-float rounded-2xl border border-white/60 bg-white/95 px-4 py-3 shadow-xl backdrop-blur [animation-delay:2s]">
+              <div className="flex items-center gap-3">
+                <div className="flex -space-x-2">
+                  {product.testimonials.slice(0, 3).map((t_item) => (
+                    <img
+                      key={t_item.name}
+                      src={t_item.avatar}
+                      alt={t_item.name}
+                      className="h-8 w-8 rounded-full border-2 border-white object-cover"
+                    />
+                  ))}
+                </div>
+                <div>
+                  <div className="flex items-center gap-0.5">
+                    {Array.from({ length: 5 }).map((_, i) => (
+                      <Icon
+                        key={i}
+                        name="Star"
+                        size={12}
+                        className={
+                          i < Math.floor(product.rating)
+                            ? "fill-yellow-400 text-yellow-400"
+                            : "text-dark-300"
+                        }
+                      />
+                    ))}
+                  </div>
+                  <p className="mt-0.5 text-xs font-semibold text-dark-700">
+                    {t.productHeader.trustCustomers.replace("{count}", `${product.salesCount}+`)}
+                  </p>
+                </div>
+              </div>
+            </div>
           </div>
 
           <div className="space-y-6">
             <div>
-              <span className="badge-primary text-[11px] uppercase tracking-wider mb-3">
+              <span className="badge-primary text-[11px] uppercase tracking-wider">
                 {product.category}
               </span>
-              <h1 className="text-2xl xs:text-3xl sm:text-4xl lg:text-5xl font-bold text-white leading-tight mt-2">
+              <h1 className="mt-3 text-3xl xs:text-4xl sm:text-4xl lg:text-5xl font-bold text-white leading-tight">
                 {product.name}
               </h1>
-              <p className="mt-3 text-lg text-dark-400">
-                {product.subtitle}
-              </p>
+              <p className="mt-3 text-lg text-dark-400">{product.subtitle}</p>
             </div>
 
             <div className="flex flex-wrap items-center gap-4 text-sm">
@@ -66,7 +118,11 @@ export function ProductHeader({ product }: ProductHeaderProps) {
                     key={i}
                     name="Star"
                     size={16}
-                    className={i < Math.floor(product.rating) ? "fill-yellow-400 text-yellow-400" : "text-dark-600"}
+                    className={
+                      i < Math.floor(product.rating)
+                        ? "fill-yellow-400 text-yellow-400"
+                        : "text-dark-600"
+                    }
                   />
                 ))}
                 <span className="ml-1 text-dark-300">
@@ -79,55 +135,64 @@ export function ProductHeader({ product }: ProductHeaderProps) {
               </span>
             </div>
 
-            <div className="flex flex-wrap items-baseline gap-2 sm:gap-3">
-              <span className="text-3xl xs:text-4xl sm:text-5xl font-bold text-white">
-                {formatPrice(product.price)}
-              </span>
-              {product.originalPrice && (
-                <span className="text-xl text-dark-500 line-through">
-                  {formatPrice(product.originalPrice)}
+            <div className="rounded-2xl bg-white p-5 xs:p-7 shadow-2xl shadow-primary-500/10">
+              <div className="flex flex-wrap items-baseline gap-3">
+                <span className="text-4xl xs:text-5xl font-bold text-dark-900">
+                  {formatPrice(product.price)}
                 </span>
+                {product.originalPrice && (
+                  <span className="text-xl text-dark-400 line-through">
+                    {formatPrice(product.originalPrice)}
+                  </span>
+                )}
+              </div>
+
+              {product.originalPrice && (
+                <div className="mt-3 flex flex-wrap items-center gap-2 text-sm">
+                  <span className="inline-flex items-center gap-1 rounded-full bg-accent-100 px-3 py-1 font-bold text-accent-700">
+                    {t.productHeader.savings} {formatPrice(product.originalPrice - product.price)}
+                  </span>
+                  <span className="text-dark-400">
+                    {t.productHeader.orInstallments.replace("{price}", formatPrice(installment))}
+                  </span>
+                </div>
               )}
-              <span className="text-xs sm:text-sm text-accent-400 font-semibold w-full xs:w-auto">
-                {t.productHeader.savings} {formatPrice(product.originalPrice! - product.price)}
-              </span>
+
+              <div className="mt-5 flex flex-col gap-3 sm:flex-row">
+                <a href="#comprar" className="btn-cta flex-1 text-base">
+                  <Icon name="ShoppingBag" size={20} />
+                  {t.productHeader.buyNow}
+                </a>
+                <a
+                  href="#beneficios"
+                  className="inline-flex flex-1 items-center justify-center gap-2 rounded-xl border-2 border-dark-200 bg-white px-6 py-3.5 text-base font-semibold text-dark-600 transition-all duration-300 hover:border-primary-600 hover:text-primary-600 active:scale-[0.98]"
+                >
+                  <Icon name="Eye" size={20} />
+                  {t.productHeader.viewContent}
+                </a>
+              </div>
             </div>
 
-            <p className="text-dark-400 leading-relaxed">
+            <div className="grid grid-cols-2 gap-3 text-xs text-dark-400 sm:grid-cols-4">
+              {[
+                { icon: "Zap", label: t.productHeader.delivery },
+                { icon: "ShieldCheck", label: t.productHeader.securePayment },
+                { icon: "RefreshCw", label: t.productHeader.lifetimeAccess },
+                { icon: "Award", label: t.productHeader.guarantee },
+              ].map((item) => (
+                <div
+                  key={item.label}
+                  className="flex items-center gap-2 rounded-xl border border-white/10 bg-white/5 px-3 py-2.5"
+                >
+                  <Icon name={item.icon} size={16} className="shrink-0 text-accent-400" />
+                  <span>{item.label}</span>
+                </div>
+              ))}
+            </div>
+
+            <p className="border-l-2 border-primary-500/50 pl-4 text-sm leading-relaxed text-dark-500">
               {product.tagline}
             </p>
-
-            <div className="flex flex-col sm:flex-row gap-3 pt-2">
-              <a
-                href="#comprar"
-                className="btn-cta text-base flex-1"
-              >
-                <Icon name="ShoppingBag" size={20} />
-                {t.productHeader.buyNow}
-              </a>
-              <a
-                href="#beneficios"
-                className="btn-secondary border-white/10 text-dark-300 hover:bg-white/10 hover:text-white flex-1"
-              >
-                <Icon name="Eye" size={20} />
-                {t.productHeader.viewContent}
-              </a>
-            </div>
-
-            <div className="flex flex-wrap items-center gap-4 pt-2 text-xs text-dark-500">
-              <span className="flex items-center gap-1">
-                <Icon name="Zap" size={14} className="text-accent-400" /> {t.productHeader.delivery}
-              </span>
-              <span className="flex items-center gap-1">
-                <Icon name="ShieldCheck" size={14} className="text-accent-400" /> {t.productHeader.securePayment}
-              </span>
-              <span className="flex items-center gap-1">
-                <Icon name="RefreshCw" size={14} className="text-accent-400" /> {t.productHeader.lifetimeAccess}
-              </span>
-              <span className="flex items-center gap-1">
-                <Icon name="Award" size={14} className="text-accent-400" /> {t.productHeader.guarantee}
-              </span>
-            </div>
           </div>
         </div>
       </div>
