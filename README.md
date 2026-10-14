@@ -93,34 +93,27 @@ A plataforma conta com **8 produtos** distribuídos em **8 categorias**:
 
 ## Deploy
 
-O projeto usa **export estático** (`output: 'export'` e `trailingSlash: true` no `next.config.js`) e é hospedado no **Cloudflare Workers** via *Static Assets*: o Worker serve a pasta `out/` gerada pelo build, sem script de servidor. O `wrangler.jsonc` não define `main`, ou seja, é um Worker só de assets.
+O projeto usa **export estático** (`output: 'export'` e `trailingSlash: true` no `next.config.js`) e é hospedado no **Netlify**, servindo a pasta `out/` gerada pelo build. Não há servidor: tudo o que o site precisa já está nos arquivos.
 
-A Cloudflare unificou o Pages dentro do Workers, então **não existe mais `*.pages.dev`** para projetos novos — `wrangler pages deploy` hoje apenas faz um deploy no Workers. O URL no plano gratuito é `primedigitalstore.<subdomínio-da-conta>.workers.dev`. Para um endereço próprio, use um domínio em *Settings → Domains & Routes*.
+O `netlify.toml` define `command = "npm run build"`, `publish = "out"` e `pretty_urls = true`. O Pretty URLs faz `/produtos/slug` virar `/produtos/slug/` quando existe `produtos/slug/index.html`, que é exatamente o comportamento do `trailingSlash: true`. O `404.html` gerado pelo Next.js é servido automaticamente, com status 404, nas rotas que não resolvem para arquivo.
 
-O `wrangler.jsonc` usa `not_found_handling: "404-page"` para servir o `404.html` do Next.js, e `html_handling: "auto-trailing-slash"`, que redireciona `/produtos/slug` para `/produtos/slug/` — o mesmo comportamento do `trailingSlash: true`.
+O `public/_headers` define cache imutável para `/_next/static/*` e headers de segurança. O Next.js copia esse arquivo para `out/` durante o build, e tanto o Netlify quanto o Cloudflare aplicam essas regras.
 
-O arquivo `public/_headers` define cache imutável para `/_next/static/*` e headers de segurança; o Next.js o copia para `out/` durante o build, e o Workers aplica essas regras.
+### Deploy
 
-### Configuração em `dash.cloudflare.com`
+Dois caminhos, sem alteração de código:
 
-Workers & Pages → *Create* → *Deploy to Workers* → conectar o repositório `devCarlosSantoss/primedigitalstore`:
+**Netlify Drop** — sem conta e sem Git: rode `npm run build` e arraste a pasta `out/` para [netlify.com/drop](https://app.netlify.com/drop). O site entra no ar em segundos com um subdomínio do tipo `numeros-aleatorios.netlify.app`.
 
-| Campo                  | Valor                 |
-|------------------------|-----------------------|
-| Build command          | `npm run build`       |
-| Deploy command         | `npx wrangler deploy` |
-| Root directory         | `/`                   |
-| Build caching          | `out` e `.next`       |
+**Git** — conecte o repositório `devCarlosSantoss/primedigitalstore` em [app.netlify.com](https://app.netlify.com) e o `netlify.toml` já cobre build, publish e versão do Node. Cada push em `main` dispara um deploy.
 
-Variáveis de ambiente: `CLOUDFLARE_API_TOKEN` e `CLOUDFLARE_ACCOUNT_ID`.
+O plano gratuito do Netlify permite uso comercial, ao contrário do plano Hobby da Vercel, que é restrito a uso pessoal.
 
-### Deploy manual
+### Alternativa: Cloudflare Workers
 
-```bash
-npm run build     # gera out/
-npm run deploy    # wrangler deploy
-npm run preview   # sobe o wrangler dev em http://localhost:8787
-```
+O `wrangler.jsonc` mantém uma configuração de *Static Assets* equivalente (`npm run deploy`), útil se você quiser sair do Netlify. Ele usa `not_found_handling: "404-page"` e `html_handling: "auto-trailing-slash"`.
+
+Vale registrar que a Cloudflare unificou o Pages dentro do Workers: **não existe mais `*.pages.dev`** para projetos novos — `wrangler pages deploy` hoje apenas faz um deploy no Workers. O URL gratuito é `primedigitalstore.<subdomínio-da-conta>.workers.dev`, que carrega o nome da conta.
 
 Como o export é estático, recursos que dependem de servidor (API routes, ISR, Server Actions) exigem revisar o `next.config.js`. O `npm start` deixa de se aplicar: para testar localmente, sirva a pasta `out/`.
 
