@@ -93,17 +93,32 @@ A plataforma conta com **8 produtos** distribuídos em **8 categorias**:
 
 ## Deploy
 
-O projeto usa **export estático** (`output: 'export'` e `trailingSlash: true` no `next.config.js`), e está preparado para o **Cloudflare Pages** — cujo plano free permite uso comercial, ao contrário do Hobby da Vercel.
+O projeto usa **export estático** (`output: 'export'` e `trailingSlash: true` no `next.config.js`) e é hospedado no **Cloudflare Workers** via *Static Assets* — o Worker serve a pasta `out/` gerada pelo build, sem script de servidor.
 
-**Configuração** em `dash.cloudflare.com` → Workers & Pages → Create → Pages → Connect to Git:
+O `wrangler.jsonc` aponta `assets.directory` para `./out` e usa `not_found_handling: "404-page"` para servir o `404.html` do Next.js. O arquivo `public/_headers` define cache imutável para `/_next/static/*` e headers de segurança; o Next.js o copia para `out/` durante o build.
 
-| Campo              | Valor              |
-|--------------------|--------------------|
-| Build command      | `npm run build`    |
-| Output directory   | `out`              |
-| Node version       | 18 ou superior     |
+### Configuração em `dash.cloudflare.com`
 
-O domínio free `primedigitalstore.pages.dev` é atribuído automaticamente no primeiro deploy, e cada push em `main` dispara um novo deploy.
+Workers & Pages → *Create* → *Deploy to Workers* → conectar o repositório `devCarlosSantoss/primedigitalstore`:
+
+| Campo                     | Valor                 |
+|---------------------------|-----------------------|
+| Build command             | `npm run build`       |
+| Deploy command            | `npx wrangler deploy` |
+| Preview deploy command    | `npx wrangler preview`|
+| Root directory            | `/`                   |
+| Node version              | 22 ou superior        |
+| Build caching             | `out` e `.next`       |
+
+Variáveis de ambiente: `CLOUDFLARE_API_TOKEN` e `CLOUDFLARE_ACCOUNT_ID`.
+
+### Deploy manual
+
+```bash
+npm run build     # gera out/
+npm run deploy    # wrangler deploy
+npm run preview   # sobe o Worker localmente em http://localhost:8787
+```
 
 Como o export é estático, recursos que dependem de servidor (API routes, ISR, Server Actions) exigem revisar o `next.config.js`. O `npm start` deixa de se aplicar: para testar localmente, sirva a pasta `out/`.
 

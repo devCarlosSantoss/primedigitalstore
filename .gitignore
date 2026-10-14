@@ -8,3 +8,5 @@ out/
 .env.production
 *.tsbuildinfo
 next-env.d.ts
+.wrangler/
+.dev.vars
