@@ -93,34 +93,39 @@ A plataforma conta com **8 produtos** distribuídos em **8 categorias**:
 
 ## Deploy
 
-O projeto usa **export estático** (`output: 'export'` e `trailingSlash: true` no `next.config.js`) e é hospedado no **Cloudflare Workers** via *Static Assets* — o Worker serve a pasta `out/` gerada pelo build, sem script de servidor.
+O projeto usa **export estático** (`output: 'export'` e `trailingSlash: true` no `next.config.js`) e é hospedado no **Cloudflare Pages**, que serve a pasta `out/` gerada pelo build. O URL do projeto é `primedigitalstore.pages.dev`, independente do subdomínio da conta.
 
-O `wrangler.jsonc` aponta `assets.directory` para `./out` e usa `not_found_handling: "404-page"` para servir o `404.html` do Next.js. O arquivo `public/_headers` define cache imutável para `/_next/static/*` e headers de segurança; o Next.js o copia para `out/` durante o build.
+O arquivo `public/_headers` define cache imutável para `/_next/static/*` e headers de segurança; o Next.js o copia para `out/` durante o build, e o Pages aplica essas regras. O `404.html` gerado pelo Next.js é servido automaticamente nas rotas inexistentes.
 
 ### Configuração em `dash.cloudflare.com`
 
-Workers & Pages → *Create* → *Deploy to Workers* → conectar o repositório `devCarlosSantoss/primedigitalstore`:
+Workers & Pages → *Create application* → *Pages* → *Connect to Git*, no repositório `devCarlosSantoss/primedigitalstore`:
 
-| Campo                     | Valor                 |
-|---------------------------|-----------------------|
-| Build command             | `npm run build`       |
-| Deploy command            | `npx wrangler deploy` |
-| Preview deploy command    | `npx wrangler preview`|
-| Root directory            | `/`                   |
-| Node version              | 22 ou superior        |
-| Build caching             | `out` e `.next`       |
+| Campo                    | Valor            |
+|--------------------------|------------------|
+| Project name             | `primedigitalstore` |
+| Production branch        | `main`           |
+| Framework preset         | `None`           |
+| Build command            | `npm run build`  |
+| Build output directory   | `out`            |
+| Root directory           | `/`              |
+| Node version             | `NODE_VERSION=22`|
 
-Variáveis de ambiente: `CLOUDFLARE_API_TOKEN` e `CLOUDFLARE_ACCOUNT_ID`.
+Usar o preset **Next.js** é incorto aqui: ele espera SSR e aponta o output para `.next`. O preset precisa ser `None`, porque o site é um export estático.
 
 ### Deploy manual
 
 ```bash
-npm run build     # gera out/
-npm run deploy    # wrangler deploy
-npm run preview   # sobe o Worker localmente em http://localhost:8787
+npm run build        # gera out/
+npm run deploy:pages # wrangler pages deploy out
+npm run preview      # sobe o wrangler dev em http://localhost:8787
 ```
 
 Como o export é estático, recursos que dependem de servidor (API routes, ISR, Server Actions) exigem revisar o `next.config.js`. O `npm start` deixa de se aplicar: para testar localmente, sirva a pasta `out/`.
+
+### Alternativa: Cloudflare Workers
+
+O `wrangler.jsonc` mantém uma configuração de *Static Assets* equivalente, caso o projeto volte a rodar como Worker (`npm run deploy`). Ela gera o URL `<worker>.<subdomínio-da-conta>.workers.dev`, que carrega o nome da conta.
 
 ## Licença
 
