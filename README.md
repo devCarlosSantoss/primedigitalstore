@@ -69,11 +69,11 @@ npm install
 # Desenvolvimento
 npm run dev
 
-# Build
+# Build estático (gera a pasta out/)
 npm run build
 
-# Produção
-npm start
+# Testar o build
+npx serve out
 ```
 
 ## Produtos
@@ -93,9 +93,19 @@ A plataforma conta com **8 produtos** distribuídos em **8 categorias**:
 
 ## Deploy
 
-O projeto está configurado para deploy na **Vercel**.
+O projeto usa **export estático** (`output: 'export'` e `trailingSlash: true` no `next.config.js`), e está preparado para o **Cloudflare Pages** — cujo plano free permite uso comercial, ao contrário do Hobby da Vercel.
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new)
+**Configuração** em `dash.cloudflare.com` → Workers & Pages → Create → Pages → Connect to Git:
+
+| Campo              | Valor              |
+|--------------------|--------------------|
+| Build command      | `npm run build`    |
+| Output directory   | `out`              |
+| Node version       | 18 ou superior     |
+
+O domínio free `primedigitalstore.pages.dev` é atribuído automaticamente no primeiro deploy, e cada push em `main` dispara um novo deploy.
+
+Como o export é estático, recursos que dependem de servidor (API routes, ISR, Server Actions) exigem revisar o `next.config.js`. O `npm start` deixa de se aplicar: para testar localmente, sirva a pasta `out/`.
 
 ## Licença
 
